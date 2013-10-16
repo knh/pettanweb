@@ -16,3 +16,7 @@ def mre_templater_wrapper ( matcher, replacer, evaluator ):
 def templater_import ( basefile, importstring ):
     # resolves imports 
     raise Exception("Unimplemented")
+    
+def respond_with ( template_name, templater ):
+    for output in do_template(template_name + ".ren", templater):
+        print output

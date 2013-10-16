@@ -8,3 +8,10 @@ def parse_simple (query_string):
         p = item.split("=")
         qs[p[0]] = p[1]
     return qs
+    
+def form_simple (qsobject):
+    # also not standards compliant, but hey
+    qs = []
+    for key in qsobject:
+        qs.append("=".join([key, qsobject[key]]))
+    return "&".join(qs)
