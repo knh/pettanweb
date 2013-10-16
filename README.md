@@ -48,4 +48,4 @@ you should keep it that way.
 
 License
 ------
-Read the [other](license) file.
+Read the [other](LICENSE) file.
