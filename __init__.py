@@ -4,19 +4,20 @@ import Cookie
 
 HAS_GIVEN_HEADER = False
 
-def give_header(content_type = "text/html", headers = {}):
+def give_header(headers = {"Content-Type":"text/html"}, append = []):
     global HAS_GIVEN_HEADER
     if HAS_GIVEN_HEADER:
         print "<h2>[Error] Headers already sent!</h2>"
         return
-    print "Content-Type: %s" % content_type
     for header in headers:
         print "%s: %s" % (header, headers[header])
+    for line in append:
+        print line
     print ""
     HAS_GIVEN_HEADER = True
 
 def redirect(url):
-    give_header(headers = {"Location": url})
+    give_header({"Location": url})
 
 def get_querystring():
     return os.environ.get("QUERY_STRING", "")
@@ -27,8 +28,7 @@ def get_cookies():
     except (Cookie.CookieError, KeyError):
         return None 
 
-def router():
-    query = get_querystring()
+def router(query):
     paths = query.split("/");
     # sanitize the paths
     sanitized = []
@@ -53,8 +53,8 @@ def route_match(route, current):
     return True
         
         
-def route(routes):
-    current = router()
+def route(routes, routing = get_querystring()):
+    current = router(routing)
     for route in routes:
         if current == route:
             routes[route](current)
