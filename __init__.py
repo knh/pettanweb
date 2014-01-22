@@ -4,6 +4,17 @@ import Cookie
 
 HAS_GIVEN_HEADER = False
 
+def guess_mime(filename):
+    ext = filename.lower().split(".")
+    if ext[-1] == "css":
+        return "text/css";
+    elif ext[-1] == "js":
+        return "application/javascript";
+    elif ext[-1] in ["txt","md","c","cpp"]:
+        return "text/plain";
+    else:
+        return "text/html";
+
 def give_header(headers = {"Content-Type":"text/html"}, append = []):
     global HAS_GIVEN_HEADER
     if HAS_GIVEN_HEADER:
@@ -45,24 +56,25 @@ def router(query):
     return tuple(sanitized)
 
 def route_match(route, current):
-    if len(route) < 2:
-        return False
-    for r in xrange(0, len(route) - 2):
-        if current[r] != route[r]:
-            return False
-    return True
-        
+    route = tuple(route)
+    current = tuple(current)
+    
+    if route == current:
+        return True;
+    if route == () or current == ():
+        return False;
+    
+    if route[0] == "*":
+        return route_match(route[1:], current[1:]) or route_match(route, current[1:])
+    if route[0] == current[0]:
+        return route_match(route[1:], current[1:])
         
 def route(routes, routing = get_querystring()):
     current = router(routing)
     for route in routes:
-        if current == route:
+        if route_match(route, current):
             routes[route](current)
             return
-        if route != () and route[-1] == "*":
-            if route_match(route, current):
-                routes[route](current)
-                return
     if () in routes:
         routes[()](current)
         return

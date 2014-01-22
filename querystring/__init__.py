@@ -15,3 +15,14 @@ def form_simple (qsobject):
     for key in qsobject:
         qs.append("=".join([key, qsobject[key]]))
     return "&".join(qs)
+
+def path_chroot (path):
+    newPath = []
+    for p in path:
+        if p != "." and p != "..":
+            newPath.append(p)
+        elif p == "..":
+            if len(newPath) > 0:
+                newPath = newPath[:-1]
+                continue
+    return tuple(newPath)
